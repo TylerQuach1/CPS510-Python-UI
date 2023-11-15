@@ -1,1 +1,1 @@
-# CPS510-Web-UI
+# CPS510-Python-UI

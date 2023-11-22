@@ -1020,12 +1020,32 @@ def query():
     results_window = tk.Toplevel(main_window)
     results_window.title('Results')
 
-    values = cursor.execute(query_entry.get())
-    for i, value in enumerate(values):
-        for j, field in enumerate(value):
-            ttk.Label(results_window, text=f'{field}').grid(
-                row=i, column=j, padx=GRID_PAD, pady=GRID_PAD)
+
+    try:
+        values = cursor.execute(query_entry.get())
+
+        statement = ((query_entry.get().split()[0]).upper())
+        print (statement)
+        if statement == "SELECT":
             
+            for i, header in enumerate(cursor.description):
+                ttk.Label(results_window, text=f'{header[0]}', font='bold').grid(
+                    row=0, column=i, padx=GRID_PAD, pady=10)
+            for i, value in enumerate(values):
+                for j, field in enumerate(value):
+                    
+                    ttk.Label(results_window, text=f'{field}').grid(
+                        row=i + 1, column=j, padx=GRID_PAD, pady=GRID_PAD)
+        else:
+            ttk.Label(results_window, text=("Successfully ran query\n", query_entry.get()), font='bold').pack(
+                padx=GRID_PAD, pady=10)
+    
+    except cx_Oracle.DatabaseError as e:
+        error, = e.args
+        ttk.Label(results_window, text=error.message).pack(
+                padx=GRID_PAD, pady=GRID_PAD)
+
+
 ttk.Label(main_window, text='Movie Table').grid(
     row=0, column=1, padx=GRID_PAD, pady=GRID_PAD)
 ttk.Button(main_window, text='Create Table', command=create_movie_table).grid(
@@ -1034,7 +1054,6 @@ ttk.Button(main_window, text='Drop Table', command=drop_movie_table).grid(
     row=1, column=1, padx=GRID_PAD, pady=GRID_PAD)
 ttk.Button(main_window, text='Populate Table', command=populate_movie_table).grid(
     row=1, column=2, padx=GRID_PAD, pady=GRID_PAD)
-
 
 ttk.Label(main_window, text='Customer Table').grid(
     row=2, column=1, padx=GRID_PAD, pady=GRID_PAD)
@@ -1107,16 +1126,7 @@ ttk.Button(main_window, text='Drop Table', command=drop_workedon_table).grid(
     row=17, column=1, padx=GRID_PAD, pady=GRID_PAD)
 ttk.Button(main_window, text='Populate Table', command=populate_workedon_table).grid(
     row=17, column=2, padx=GRID_PAD, pady=GRID_PAD)
-"""
-ttk.Label(main_window, text='All Tables').grid(
-    row=14, column=1, padx=GRID_PAD, pady=GRID_PAD)
-ttk.Button(main_window, text='Create all Tables', command=create_all_table).grid(
-    row=15, column=0, padx=GRID_PAD, pady=GRID_PAD)
-ttk.Button(main_window, text='Drop all Tables', command=drop_all_table).grid(
-    row=15, column=1, padx=GRID_PAD, pady=GRID_PAD)
-ttk.Button(main_window, text='Populate all Tables', command=populate_all_table).grid(
-    row=15, column=2, padx=GRID_PAD, pady=GRID_PAD)
-"""
+
 query_entry = ttk.Entry(main_window)
 query_entry.grid(row=20, column=0, columnspan=2,
                  sticky=tk.EW, padx=GRID_PAD, pady=GRID_PAD)
@@ -1159,7 +1169,6 @@ def login():  # Handle login logic
 
     global connection, cursor
 
-
     # Ryerson database connection
     try:
         dsn = """(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(Host=oracle.scs.ryerson.ca)(Port=1521))(CONNECT_DATA=(SID=orcl)))"""
@@ -1168,6 +1177,7 @@ def login():  # Handle login logic
         cursor = connection.cursor()
     except:
         main_window.destroy()
+        print("failed to log in")
         return
 
     main_window.wm_deiconify()

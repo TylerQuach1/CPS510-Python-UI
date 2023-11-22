@@ -1,3 +1,13 @@
+"""
+CPS510, Sec 8, Team 12 - Assignment 9
+
+Dante Romita - 501019504
+Eric Ren - 501039074
+Tyler Quach - 500966762
+
+"""
+
+
 import cx_Oracle
 import tkinter as tk
 from tkinter import ttk

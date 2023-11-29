@@ -3,9 +3,9 @@
 
 # Authors
 
-- Dante Romita - 501019504
-- Eric Ren - 501039074
-- Tyler Quach - 500966762
+- Dante Romita 
+- Eric Ren 
+- Tyler Quach 
 
 .exe available to run instead of .py file
 
